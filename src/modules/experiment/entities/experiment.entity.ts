@@ -12,7 +12,7 @@ import {
 
 import { LayerEntity } from '@/modules/experiment/entities/layer.entity';
 
-import { ExperimentStatus, SamplingType } from '../constants';
+import { ExperimentStatus, SamplingType, TestType } from '../constants';
 
 @Exclude()
 @Entity('abtest_experiments')
@@ -22,31 +22,31 @@ export class ExperimentEntity extends BaseEntity {
     id: string;
 
     @Expose()
-    @Column({ comment: '实验名称', length: 255, nullable: true })
+    @Column({ comment: '实验名称' })
     name: string;
 
     @Expose()
     @Column({ comment: '实验描述', length: 1024, nullable: true })
     description: string;
 
-    @Column({ comment: '实验源URL', length: 512 })
+    @Column({ comment: '源URL', length: 512 })
     originUrl: string;
+
+    @Expose()
+    @Column({ comment: '实验测试类型', type: 'varchar', default: TestType.ABTEST })
+    testType: TestType;
 
     @Expose()
     @Column({ comment: '实验测试URL', length: 512 })
     testUrl: string;
 
     @Expose()
-    @Column({ comment: '实验采样率', default: 10 })
-    samplingRate: number;
-
-    @Expose()
     @Column({ comment: '实验采样类型', type: 'varchar', default: SamplingType.AUTOMATIC })
     samplingType: SamplingType;
 
     @Expose()
-    @Column({ comment: '实验采样率列表', nullable: true })
-    samplingRateList?: string;
+    @Column({ comment: '实验采样率', default: 10 })
+    samplingRate: number;
 
     @Expose()
     @Column({
@@ -64,17 +64,17 @@ export class ExperimentEntity extends BaseEntity {
     @Column({ comment: '实验黑名单', length: 2048, nullable: true })
     blackList: string;
 
-    @Expose()
-    @Column({ comment: '实验拥有者' })
-    owner: number;
+    // @Expose()
+    // @Column({ comment: '实验拥有者' })
+    // owner: number;
 
-    @Expose()
-    @Column({ comment: '实验创建者' })
-    starter: number;
+    // @Expose()
+    // @Column({ comment: '实验创建者' })
+    // starter: number;
 
-    @Expose()
-    @Column({ comment: '实验结束者' })
-    ender: number;
+    // @Expose()
+    // @Column({ comment: '实验结束者' })
+    // ender: number;
 
     @Expose()
     @Column({ comment: '实验命中次数', nullable: true, default: 0 })
@@ -85,7 +85,7 @@ export class ExperimentEntity extends BaseEntity {
     hitKeyCount: number;
 
     @Expose()
-    @Column({ comment: '实验命中hash次数', nullable: true })
+    @Column({ comment: '实验命中hash次数', length: 512, nullable: true })
     hashSet: string;
 
     @Expose()

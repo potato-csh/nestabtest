@@ -9,3 +9,8 @@ export enum SamplingType {
     AUTOMATIC = 'AUTOMATIC',
     CUSTOM = 'CUSTOM',
 }
+
+export enum TestType {
+    ABTEST = 'ABTEST',
+    INTERLEAVING = 'INTERLEAVING',
+}

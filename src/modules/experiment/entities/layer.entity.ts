@@ -12,6 +12,8 @@ import {
 
 import { ExperimentEntity } from '@/modules/experiment/entities/experiment.entity';
 
+import { genHashSet } from '../helpers';
+
 @Exclude()
 @Entity('abtest_layers')
 export class LayerEntity extends BaseEntity {
@@ -20,24 +22,30 @@ export class LayerEntity extends BaseEntity {
     id: string;
 
     @Expose()
-    @Column({ comment: '实验图层名称', length: 255 })
+    @Column({ comment: '实验图层名称' })
     name: string;
 
     @Expose()
-    @Column({ comment: '实验图层描述', length: 255 })
+    @Column({ comment: '实验图层类型' })
+    type: string;
+
+    @Expose()
+    @Column({ comment: '实验图层描述', length: 512, nullable: true })
     description: string;
 
     @Expose()
-    @Column({ comment: '实验源URL', length: 255 })
+    @Column({ comment: '实验源URL' })
     originUrl: string;
 
-    @Expose()
-    @Column({ comment: '实验图层拥有者' })
-    owner: number;
+    // @Expose()
+    // @Column({ comment: '实验图层拥有者' })
+    // owner: number;
 
     @Expose()
     @Column({
         comment: '实验命中hash次数',
+        length: 512,
+        default: genHashSet(0, 99),
     })
     hashSet: string;
 
