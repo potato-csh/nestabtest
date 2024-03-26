@@ -57,6 +57,7 @@ export class ExperimentService {
      * @param data
      */
     async create(data: CreateExperimentDto) {
+        console.log('data:', data);
         const createExperimentDto = {
             ...data,
             layer: !isNil(data.layer)

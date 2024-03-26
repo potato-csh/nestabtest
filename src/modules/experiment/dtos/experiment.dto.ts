@@ -69,19 +69,19 @@ export class CreateExperimentDto {
      * 实验描述
      */
     @MaxLength(1024, { always: true, message: '实验描述的长度不能超过$constraint1' })
-    @IsOptional()
+    @IsOptional({ always: true })
     description?: string;
 
     /**
      * 实验图层ID
      */
-    @IsUUID(undefined, { each: true, always: true, message: '实验图层ID不合法' })
+    @IsUUID(undefined, { always: true, message: '实验图层ID不合法' })
     layer: string;
 
     /**
      * 源URL
      */
-    @MaxLength(512, { message: '源URL的长度不能超过$constraint1' })
+    @MaxLength(512, { always: true, message: '源URL的长度不能超过$constraint1' })
     originUrl: string;
 
     /**
@@ -96,13 +96,13 @@ export class CreateExperimentDto {
     /**
      * 测试URL
      */
-    @MaxLength(512, { message: '测试URL的长度不能超过$constraint1' })
+    @MaxLength(512, { always: true, message: '测试URL的长度不能超过$constraint1' })
     testUrl: string;
 
     /**
      * 采样类型
      */
-    @IsEnum(TestType, {
+    @IsEnum(SamplingType, {
         always: true,
         message: `采样率类型只能是${Object.values(SamplingType).join('、')}`,
     })
@@ -112,37 +112,37 @@ export class CreateExperimentDto {
      * 采样率(1-50)
      */
     @Transform(({ value }) => toNumber(value))
-    @Min(1, { message: '采样率不能小于1' })
-    @Max(50, { message: '采样率不能大于50' })
-    @IsNumber()
+    @IsNumber(undefined, { always: true, message: '采样率不为数字' })
+    @Min(1, { always: true, message: '采样率不能小于1' })
+    @Max(50, { always: true, message: '采样率不能大于50' })
     samplingRate: number;
 
     /**
      * 白名单
      */
     @MaxLength(2048, { message: '白名单的长度不能超过$constraint1' })
-    @IsOptional()
+    @IsOptional({ always: true })
     whiteList?: string;
 
     /**
      * 黑名单
      */
     @MaxLength(2048, { message: '黑名单的长度不能超过$constraint1' })
-    @IsOptional()
+    @IsOptional({ always: true })
     balackList?: string;
 
     /**
      * 预启动时间
      */
     @IsDate()
-    @IsOptional()
+    @IsOptional({ always: true })
     startTimePreset?: Date;
 
     /**
      * 预停止时间
      */
     @IsDate()
-    @IsOptional()
+    @IsOptional({ always: true })
     endTimePreset?: Date;
 }
 

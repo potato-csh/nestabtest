@@ -8,6 +8,7 @@ import {
     Patch,
     Post,
     Query,
+    ValidationPipe,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
@@ -30,7 +31,17 @@ export class ExperimentController {
      */
     @Get()
     async list(
-        @Query()
+        @Query(
+            new ValidationPipe({
+                transform: true,
+                whitelist: true,
+                forbidNonWhitelisted: true,
+                forbidUnknownValues: true,
+                validationError: {
+                    target: false,
+                },
+            }),
+        )
         options: QueryExperimentDto,
     ) {
         return this.service.paginate(options);
@@ -54,7 +65,18 @@ export class ExperimentController {
      */
     @Post()
     async create(
-        @Body()
+        @Body(
+            new ValidationPipe({
+                transform: true,
+                whitelist: true,
+                forbidNonWhitelisted: true,
+                forbidUnknownValues: true,
+                validationError: {
+                    target: false,
+                },
+                groups: ['create'],
+            }),
+        )
         data: CreateExperimentDto,
     ) {
         return this.service.create(data);
@@ -66,7 +88,18 @@ export class ExperimentController {
      */
     @Patch()
     async update(
-        @Body()
+        @Body(
+            new ValidationPipe({
+                transform: true,
+                whitelist: true,
+                forbidNonWhitelisted: true,
+                forbidUnknownValues: true,
+                validationError: {
+                    target: false,
+                },
+                groups: ['update'],
+            }),
+        )
         data: UpdateExperimentDto,
     ) {
         return this.service.update(data);
