@@ -18,8 +18,8 @@ export interface PaginateMeta {
 }
 
 export interface PaginateOptions {
-    page: number;
-    limit: number;
+    page?: number;
+    limit?: number;
 }
 export interface PaginateReturn<E extends ObjectLiteral> {
     meta: PaginateMeta;

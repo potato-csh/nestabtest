@@ -6,6 +6,7 @@ import { EntityNotFoundError } from 'typeorm';
 import { paginate } from '@/modules/database/helpers';
 import { PaginateOptions, QueryHook } from '@/modules/database/types';
 
+import { CreateLayerDto, UpdateLayerDto } from '../dtos/layer.dto';
 import { LayerEntity } from '../entities';
 import { LayerRepository } from '../repositories';
 
@@ -46,7 +47,7 @@ export class LayerService {
      * 创建实验
      * @param data
      */
-    async create(data: Record<string, any>) {
+    async create(data: CreateLayerDto) {
         const item = await this.repository.save(data);
         return this.detail(item.id);
     }
@@ -56,7 +57,7 @@ export class LayerService {
      * @param id
      * @param data
      */
-    async update(data: Record<string, any>) {
+    async update(data: UpdateLayerDto) {
         await this.repository.update(data.id, omit(data, [data.id]));
         return this.detail(data.id);
     }

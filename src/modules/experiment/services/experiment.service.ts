@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { omit } from 'lodash';
+import { isNil, omit } from 'lodash';
 import { EntityNotFoundError } from 'typeorm';
 
 import { paginate } from '@/modules/database/helpers';
@@ -12,11 +12,15 @@ import {
     UpdateExperimentDto,
 } from '../dtos/experiment.dto';
 import { ExperimentEntity } from '../entities';
+import { LayerRepository } from '../repositories';
 import { ExperimentRepository } from '../repositories/experiment.repository';
 
 @Injectable()
 export class ExperimentService {
-    constructor(protected repository: ExperimentRepository) {}
+    constructor(
+        protected repository: ExperimentRepository,
+        protected layerRepository: LayerRepository,
+    ) {}
 
     /**
      * 查询实验分页数据
@@ -39,7 +43,6 @@ export class ExperimentService {
     async detail(id: string, callback?: QueryHook<ExperimentEntity>) {
         const qb = this.repository.buildBaseQB();
         qb.where('experiment.id = :id', { id });
-        qb.leftJoinAndSelect('experiment.layer', 'layer');
         if (callback) {
             callback(qb);
         }
@@ -54,7 +57,13 @@ export class ExperimentService {
      * @param data
      */
     async create(data: CreateExperimentDto) {
-        const item = await this.repository.save(data);
+        const createExperimentDto = {
+            ...data,
+            layer: !isNil(data.layer)
+                ? await this.layerRepository.findOneOrFail({ where: { id: data.layer } })
+                : null,
+        };
+        const item = await this.repository.save(createExperimentDto);
         return this.detail(item.id);
     }
 
@@ -64,7 +73,13 @@ export class ExperimentService {
      * @param data
      */
     async update(data: UpdateExperimentDto) {
-        await this.repository.update(data.id, omit(data, [data.id]));
+        const experiment = await this.detail(data.id);
+        const layer = !isNil(data.layer)
+            ? await this.layerRepository.findOneOrFail({ where: { id: data.layer } })
+            : null;
+        experiment.layer = layer;
+        await this.repository.save(experiment, { reload: true });
+        await this.repository.update(data.id, omit(data, ['id', 'layer']));
         return this.detail(data.id);
     }
 

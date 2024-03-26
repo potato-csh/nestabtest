@@ -7,6 +7,6 @@ import { ExperimentEntity } from '../entities/experiment.entity';
 @CustomRepository(ExperimentEntity)
 export class ExperimentRepository extends Repository<ExperimentEntity> {
     buildBaseQB() {
-        return this.createQueryBuilder('experiment');
+        return this.createQueryBuilder('experiment').leftJoinAndSelect('experiment.layer', 'layer');
     }
 }

@@ -6,6 +6,7 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import metadata from './metadata';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
@@ -17,8 +18,9 @@ async function bootstrap() {
         .setTitle('Nest example')
         .setDescription('The API description')
         .setVersion('1.0')
-        .addTag('experiment')
+        // .addTag('experiment')
         .build();
+    await SwaggerModule.loadPluginMetadata(metadata);
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 

@@ -10,7 +10,7 @@ import {
     Query,
 } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 import {
     CreateExperimentDto,
@@ -19,14 +19,16 @@ import {
 } from '../dtos/experiment.dto';
 import { ExperimentService } from '../services/experiment.service';
 
-@ApiBearerAuth()
-@ApiTags('experiment')
+@ApiTags('对Experiment的CURD操作')
 @Controller('experiment')
 export class ExperimentController {
     constructor(protected service: ExperimentService) {}
 
+    /**
+     * 获取实验列表
+     * @param options
+     */
     @Get()
-    @ApiOperation({ summary: 'Get experiment list' })
     async list(
         @Query()
         options: QueryExperimentDto,
@@ -34,8 +36,11 @@ export class ExperimentController {
         return this.service.paginate(options);
     }
 
+    /**
+     * 获取实验详情
+     * @param id
+     */
     @Get(':id')
-    @ApiOperation({ summary: 'Get experiment detail' })
     async detail(
         @Param('id', new ParseUUIDPipe())
         id: string,
@@ -43,8 +48,11 @@ export class ExperimentController {
         return this.service.detail(id);
     }
 
+    /**
+     * 创建实验
+     * @param data
+     */
     @Post()
-    @ApiOperation({ summary: 'Create experiment' })
     async create(
         @Body()
         data: CreateExperimentDto,
@@ -52,8 +60,11 @@ export class ExperimentController {
         return this.service.create(data);
     }
 
+    /**
+     * 修改实验
+     * @param data
+     */
     @Patch()
-    @ApiOperation({ summary: 'Update experiment' })
     async update(
         @Body()
         data: UpdateExperimentDto,
@@ -61,8 +72,11 @@ export class ExperimentController {
         return this.service.update(data);
     }
 
+    /**
+     * 删除实验
+     * @param id
+     */
     @Delete(':id')
-    @ApiOperation({ summary: 'Delete experiment' })
     async delete(
         @Param('id', new ParseUUIDPipe())
         id: string,
