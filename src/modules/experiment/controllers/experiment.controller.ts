@@ -8,10 +8,14 @@ import {
     Patch,
     Post,
     Query,
+    SerializeOptions,
+    UseInterceptors,
     ValidationPipe,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
+
+import { AppInterceptor } from '@/modules/core/providers/app.interceptor';
 
 import {
     CreateExperimentDto,
@@ -20,6 +24,7 @@ import {
 } from '../dtos/experiment.dto';
 import { ExperimentService } from '../services/experiment.service';
 
+@UseInterceptors(AppInterceptor)
 @ApiTags('对Experiment的CURD操作')
 @Controller('experiment')
 export class ExperimentController {
@@ -30,6 +35,7 @@ export class ExperimentController {
      * @param options
      */
     @Get()
+    @SerializeOptions({ groups: ['experiment-list'] })
     async list(
         @Query(
             new ValidationPipe({
@@ -52,6 +58,7 @@ export class ExperimentController {
      * @param id
      */
     @Get(':id')
+    @SerializeOptions({ groups: ['experiment-detail'] })
     async detail(
         @Param('id', new ParseUUIDPipe())
         id: string,
@@ -64,6 +71,7 @@ export class ExperimentController {
      * @param data
      */
     @Post()
+    @SerializeOptions({ groups: ['experiment-detail'] })
     async create(
         @Body(
             new ValidationPipe({
@@ -87,6 +95,7 @@ export class ExperimentController {
      * @param data
      */
     @Patch()
+    @SerializeOptions({ groups: ['experiment-detail'] })
     async update(
         @Body(
             new ValidationPipe({
@@ -110,6 +119,7 @@ export class ExperimentController {
      * @param id
      */
     @Delete(':id')
+    @SerializeOptions({ groups: ['experiment-detail'] })
     async delete(
         @Param('id', new ParseUUIDPipe())
         id: string,

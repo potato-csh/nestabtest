@@ -29,7 +29,7 @@ export class LayerEntity extends BaseEntity {
     @Column({ comment: '实验图层类型' })
     type: string;
 
-    @Expose()
+    @Expose({ groups: ['layer-detail'] })
     @Column({ comment: '实验图层描述', length: 512, nullable: true })
     description: string;
 
@@ -41,7 +41,7 @@ export class LayerEntity extends BaseEntity {
     // @Column({ comment: '实验图层拥有者' })
     // owner: number;
 
-    @Expose()
+    @Expose({ groups: ['layer-detail'] })
     @Column({
         comment: '实验命中hash次数',
         length: 512,

@@ -57,11 +57,12 @@ export class ExperimentService {
      * @param data
      */
     async create(data: CreateExperimentDto) {
-        console.log('data:', data);
         const createExperimentDto = {
             ...data,
             layer: !isNil(data.layer)
-                ? await this.layerRepository.findOneOrFail({ where: { id: data.layer } })
+                ? await this.layerRepository.findOneOrFail({
+                      where: { id: data.layer, originUrl: data.originUrl },
+                  })
                 : null,
         };
         const item = await this.repository.save(createExperimentDto);
@@ -76,7 +77,9 @@ export class ExperimentService {
     async update(data: UpdateExperimentDto) {
         const experiment = await this.detail(data.id);
         const layer = !isNil(data.layer)
-            ? await this.layerRepository.findOneOrFail({ where: { id: data.layer } })
+            ? await this.layerRepository.findOneOrFail({
+                  where: { id: data.layer, originUrl: data.originUrl },
+              })
             : null;
         experiment.layer = layer;
         await this.repository.save(experiment, { reload: true });

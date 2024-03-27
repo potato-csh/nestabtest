@@ -25,22 +25,23 @@ export class ExperimentEntity extends BaseEntity {
     @Column({ comment: '实验名称' })
     name: string;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验描述', length: 1024, nullable: true })
     description: string;
 
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '源URL', length: 512 })
     originUrl: string;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验测试类型', type: 'varchar', default: TestType.ABTEST })
     testType: TestType;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验测试URL', length: 512 })
     testUrl: string;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验采样类型', type: 'varchar', default: SamplingType.AUTOMATIC })
     samplingType: SamplingType;
 
@@ -56,11 +57,11 @@ export class ExperimentEntity extends BaseEntity {
     })
     status: ExperimentStatus;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验白名单', length: 2048, nullable: true })
     whiteList: string;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验黑名单', length: 2048, nullable: true })
     blackList: string;
 
@@ -76,15 +77,15 @@ export class ExperimentEntity extends BaseEntity {
     // @Column({ comment: '实验结束者' })
     // ender: number;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验命中次数', nullable: true, default: 0 })
     hitCount: number;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验命中key次数', nullable: true, default: 0 })
     hitKeyCount: number;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验命中hash次数', length: 512, nullable: true })
     hashSet: string;
 
@@ -96,11 +97,11 @@ export class ExperimentEntity extends BaseEntity {
     @Column({ comment: '实验预测结束时间', nullable: true })
     endTimePreset: Date;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验实际开始时间', nullable: true })
     startTimeReal: Date;
 
-    @Expose()
+    @Expose({ groups: ['experiment-detail'] })
     @Column({ comment: '实验实际结束时间', nullable: true })
     endTimeReal: Date;
 

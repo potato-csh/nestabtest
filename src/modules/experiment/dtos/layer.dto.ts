@@ -1,5 +1,31 @@
 import { PartialType } from '@nestjs/swagger';
-import { IsDefined, IsOptional, IsUUID, MaxLength } from 'class-validator';
+
+import { Transform } from 'class-transformer';
+import { IsDefined, IsNumber, IsOptional, IsUUID, MaxLength, Min } from 'class-validator';
+
+import { toNumber } from 'lodash';
+
+import { PaginateOptions } from '@/modules/database/types';
+
+export class QueryLayerDto implements PaginateOptions {
+    /**
+     * 页数, 不能小于1
+     */
+    @Transform(({ value }) => toNumber(value))
+    @Min(1, { message: '页码不能小于1' })
+    @IsNumber()
+    @IsOptional()
+    page?: number = 1;
+
+    /**
+     * 每页条数, 不能小于1
+     */
+    @Transform(({ value }) => toNumber(value))
+    @Min(1, { message: '每页条数不能小于1' })
+    @IsNumber()
+    @IsOptional()
+    limit?: number = 10;
+}
 
 export class CreateLayerDto {
     /**
