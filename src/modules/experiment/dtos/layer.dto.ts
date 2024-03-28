@@ -5,8 +5,10 @@ import { IsDefined, IsNumber, IsOptional, IsUUID, MaxLength, Min } from 'class-v
 
 import { toNumber } from 'lodash';
 
+import { DtoValidation } from '@/modules/core/decorators/dto-validation.decorator';
 import { PaginateOptions } from '@/modules/database/types';
 
+@DtoValidation({ type: 'query' })
 export class QueryLayerDto implements PaginateOptions {
     /**
      * 页数, 不能小于1
@@ -27,6 +29,7 @@ export class QueryLayerDto implements PaginateOptions {
     limit?: number = 10;
 }
 
+@DtoValidation({ groups: ['create'] })
 export class CreateLayerDto {
     /**
      * 图层名称
@@ -54,6 +57,7 @@ export class CreateLayerDto {
     originUrl: string;
 }
 
+@DtoValidation({ groups: ['update'] })
 export class UpdateLayerDto extends PartialType(CreateLayerDto) {
     /**
      * 图层ID

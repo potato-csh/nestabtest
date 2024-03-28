@@ -8,19 +8,14 @@ import {
     Patch,
     Post,
     Query,
-    UseInterceptors,
     SerializeOptions,
-    ValidationPipe,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
 
-import { AppInterceptor } from '@/modules/core/providers/app.interceptor';
-
 import { CreateLayerDto, QueryLayerDto, UpdateLayerDto } from '../dtos/layer.dto';
 import { LayerService } from '../services/layer.service';
 
-@UseInterceptors(AppInterceptor)
 @ApiTags('对Layer的CURD操作')
 @Controller('layer')
 export class LayerController {
@@ -33,17 +28,7 @@ export class LayerController {
     @Get()
     @SerializeOptions({ groups: ['layer-list'] })
     async list(
-        @Query(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: {
-                    target: false,
-                },
-            }),
-        )
+        @Query()
         options: QueryLayerDto,
     ) {
         return this.service.paginate(options);
@@ -69,18 +54,7 @@ export class LayerController {
     @Post()
     @SerializeOptions({ groups: ['layer-detail'] })
     async create(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: {
-                    target: false,
-                },
-                groups: ['create'],
-            }),
-        )
+        @Body()
         data: CreateLayerDto,
     ) {
         return this.service.create(data);
@@ -93,18 +67,7 @@ export class LayerController {
     @Patch()
     @SerializeOptions({ groups: ['layer-detail'] })
     async update(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: {
-                    target: false,
-                },
-                groups: ['update'],
-            }),
-        )
+        @Body()
         data: UpdateLayerDto,
     ) {
         return this.service.update(data);

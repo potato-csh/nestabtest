@@ -9,13 +9,9 @@ import {
     Post,
     Query,
     SerializeOptions,
-    UseInterceptors,
-    ValidationPipe,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
-
-import { AppInterceptor } from '@/modules/core/providers/app.interceptor';
 
 import {
     CreateExperimentDto,
@@ -24,7 +20,6 @@ import {
 } from '../dtos/experiment.dto';
 import { ExperimentService } from '../services/experiment.service';
 
-@UseInterceptors(AppInterceptor)
 @ApiTags('对Experiment的CURD操作')
 @Controller('experiment')
 export class ExperimentController {
@@ -37,17 +32,7 @@ export class ExperimentController {
     @Get()
     @SerializeOptions({ groups: ['experiment-list'] })
     async list(
-        @Query(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: {
-                    target: false,
-                },
-            }),
-        )
+        @Query()
         options: QueryExperimentDto,
     ) {
         return this.service.paginate(options);
@@ -73,18 +58,7 @@ export class ExperimentController {
     @Post()
     @SerializeOptions({ groups: ['experiment-detail'] })
     async create(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: {
-                    target: false,
-                },
-                groups: ['create'],
-            }),
-        )
+        @Body()
         data: CreateExperimentDto,
     ) {
         return this.service.create(data);
@@ -97,18 +71,7 @@ export class ExperimentController {
     @Patch()
     @SerializeOptions({ groups: ['experiment-detail'] })
     async update(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: {
-                    target: false,
-                },
-                groups: ['update'],
-            }),
-        )
+        @Body()
         data: UpdateExperimentDto,
     ) {
         return this.service.update(data);

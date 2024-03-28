@@ -13,10 +13,12 @@ import {
 } from 'class-validator';
 import { toNumber } from 'lodash';
 
+import { DtoValidation } from '@/modules/core/decorators/dto-validation.decorator';
 import { PaginateOptions } from '@/modules/database/types';
 
 import { ExperimentStatus, SamplingType, TestType } from '../constants';
 
+@DtoValidation({ type: 'query' })
 export class QueryExperimentDto implements PaginateOptions {
     /**
      * 实验名称
@@ -58,6 +60,7 @@ export class QueryExperimentDto implements PaginateOptions {
     limit?: number = 10;
 }
 
+@DtoValidation({ groups: ['create'] })
 export class CreateExperimentDto {
     /**
      * 实验名称
@@ -146,6 +149,7 @@ export class CreateExperimentDto {
     endTimePreset?: Date;
 }
 
+@DtoValidation({ groups: ['update'] })
 export class UpdateExperimentDto extends PartialType(CreateExperimentDto) {
     /**
      * 实验ID
