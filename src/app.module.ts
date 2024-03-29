@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { database } from './config';
+import { AppFilter } from './modules/core/providers/app.filter';
 import { AppInterceptor } from './modules/core/providers/app.interceptor';
 import { AppPipe } from './modules/core/providers/app.pipe';
 import { DatabaseModule } from './modules/database/database.module';
@@ -24,7 +25,11 @@ import { ExperimentModule } from './modules/experiment/experiment.module';
         },
         {
             provide: 'APP_INTERCEPTOR',
-            useValue: AppInterceptor,
+            useClass: AppInterceptor,
+        },
+        {
+            provide: 'APP_FILTER',
+            useClass: AppFilter,
         },
     ],
 })
