@@ -121,6 +121,13 @@ export class CreateExperimentDto {
     samplingRate: number;
 
     /**
+     * 自定义采样范围
+     */
+    @MaxLength(255, { message: '自定义采样范围的长度不能超过$constraint1' })
+    @IsOptional({ always: true })
+    customSamplingRange?: string;
+
+    /**
      * 白名单
      */
     @MaxLength(2048, { message: '白名单的长度不能超过$constraint1' })

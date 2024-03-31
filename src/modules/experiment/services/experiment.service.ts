@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { isNil, omit } from 'lodash';
-import { EntityNotFoundError } from 'typeorm';
+import { EntityNotFoundError, SelectQueryBuilder } from 'typeorm';
 
-import { paginate } from '@/modules/database/helpers';
+import { BaseService } from '@/modules/database/base/service';
 import { QueryHook } from '@/modules/database/types';
 
 import {
@@ -16,23 +16,31 @@ import { LayerRepository } from '../repositories';
 import { ExperimentRepository } from '../repositories/experiment.repository';
 
 @Injectable()
-export class ExperimentService {
+export class ExperimentService extends BaseService<ExperimentEntity, ExperimentRepository> {
     constructor(
         protected repository: ExperimentRepository,
         protected layerRepository: LayerRepository,
-    ) {}
+    ) {
+        super(repository);
+    }
 
     /**
      * 查询实验分页数据
      * @param options
      * @param callback
      */
-    async paginate(options: QueryExperimentDto, callback?: QueryHook<ExperimentEntity>) {
-        const qb = this.repository.buildBaseQB();
-        if (callback) {
-            callback(qb);
-        }
-        return paginate(qb, options);
+    async paginate(options: QueryExperimentDto) {
+        const addQuery = async (qb: SelectQueryBuilder<ExperimentEntity>) => {
+            if (!isNil(options.name))
+                qb.andWhere('experiment.name LIKE :name', { name: `%${options.name}%` });
+            if (!isNil(options.status))
+                qb.andWhere('status =: status', { status: `${options.status}` });
+            if (!isNil(options.layer))
+                qb.andWhere('layerId =: layer', { layer: `${options.layer}` });
+            return qb;
+        };
+
+        return super.paginate(options, addQuery);
     }
 
     /**
@@ -41,12 +49,7 @@ export class ExperimentService {
      * @param callback
      */
     async detail(id: string, callback?: QueryHook<ExperimentEntity>) {
-        const qb = this.repository.buildBaseQB();
-        qb.where('experiment.id = :id', { id });
-        if (callback) {
-            callback(qb);
-        }
-        const item = await qb.getOne();
+        const item = await super.detail(id, callback);
         if (!item)
             throw new EntityNotFoundError(ExperimentEntity, `The experiment ${id} not exists!`);
         return item;
@@ -66,6 +69,8 @@ export class ExperimentService {
                 : null,
         };
         const item = await this.repository.save(createExperimentDto);
+        // 更新实验以及实验图层的hashSet
+        await item.updateHashSet(data.samplingType, data.samplingRate, data.customSamplingRange);
         return this.detail(item.id);
     }
 
@@ -92,7 +97,6 @@ export class ExperimentService {
      * @param id
      */
     async delete(id: string) {
-        const item = await this.repository.findOneByOrFail({ id });
-        return this.repository.remove(item);
+        return super.delete(id);
     }
 }

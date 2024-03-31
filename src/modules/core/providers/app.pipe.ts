@@ -9,7 +9,6 @@ export class AppPipe extends ValidationPipe {
     async transform(value: any, metadata: ArgumentMetadata) {
         // 1. 获取当前验证参数的DTO类(通过`design:paramtypes`获取参数值的类型)以及请求数据的类型
         const { metatype, type } = metadata;
-        console.log('value:', value, '\nmetatype:', metatype, '\ntype:', type);
         const dto = metatype as any;
         // 2. 通过`metadata`获取这个DTO类上的自定义验证选项(包含了序列化选项等，请看上述装饰器)
         const options = Reflect.getMetadata(DTO_VALIDATION_OPTIONS, dto) || {};
@@ -19,14 +18,7 @@ export class AppPipe extends ValidationPipe {
         const originTransform = { ...this.transformOptions };
         // 5. 把自定义选项给结构出来，获取自定义的序列化和验证选项，以及当前DTO类需要验证的请求数据类型(比如`body`,`query`等，具体查看`optionsType`类型)
         const { transformOptions, type: optionsType, ...customOptions } = options;
-        console.log(
-            '\ntransformOptions:',
-            transformOptions,
-            '\ntype:',
-            type,
-            '\ncustomOptions:',
-            customOptions,
-        );
+
         // 6. 如果没有自定义设置待验证的请求数据类型，则默认为验证`body`数据
         const requestType: Paramtype = optionsType ?? 'body';
 
@@ -72,7 +64,6 @@ export class AppPipe extends ValidationPipe {
             // 12. 重置默认验证和序列化选项为前面我们通过常量存储的父类自带的选项
             this.transformOptions = originTransform;
             this.validatorOptions = originOptions;
-            console.log('\nresult:', result);
             return result;
         } catch (error: any) {
             this.transformOptions = originTransform;

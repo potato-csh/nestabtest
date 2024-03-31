@@ -1,12 +1,9 @@
-import { Repository } from 'typeorm';
-
+import { BaseRepository } from '@/modules/database/base/repository';
 import { CustomRepository } from '@/modules/database/decorators';
 
 import { LayerEntity } from '../entities/layer.entity';
 
 @CustomRepository(LayerEntity)
-export class LayerRepository extends Repository<LayerEntity> {
-    buildBaseQB() {
-        return this.createQueryBuilder('layer');
-    }
+export class LayerRepository extends BaseRepository<LayerEntity> {
+    protected _qbName = 'layer';
 }

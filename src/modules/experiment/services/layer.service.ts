@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { omit } from 'lodash';
 import { EntityNotFoundError } from 'typeorm';
 
-import { paginate } from '@/modules/database/helpers';
+import { BaseService } from '@/modules/database/base/service';
 import { PaginateOptions, QueryHook } from '@/modules/database/types';
 
 import { CreateLayerDto, UpdateLayerDto } from '../dtos/layer.dto';
@@ -11,8 +11,10 @@ import { LayerEntity } from '../entities';
 import { LayerRepository } from '../repositories';
 
 @Injectable()
-export class LayerService {
-    constructor(protected repository: LayerRepository) {}
+export class LayerService extends BaseService<LayerEntity, LayerRepository> {
+    constructor(protected repository: LayerRepository) {
+        super(repository);
+    }
 
     /**
      * 查询实验分页数据
@@ -20,11 +22,7 @@ export class LayerService {
      * @param callback
      */
     async paginate(options: PaginateOptions, callback?: QueryHook<LayerEntity>) {
-        const qb = this.repository.buildBaseQB();
-        if (callback) {
-            callback(qb);
-        }
-        return paginate(qb, options);
+        return super.paginate(options, callback);
     }
 
     /**
@@ -33,12 +31,7 @@ export class LayerService {
      * @param callback
      */
     async detail(id: string, callback?: QueryHook<LayerEntity>) {
-        const qb = this.repository.buildBaseQB();
-        qb.where('layer.id = :id', { id });
-        if (callback) {
-            callback(qb);
-        }
-        const item = await qb.getOne();
+        const item = await super.detail(id, callback);
         if (!item) throw new EntityNotFoundError(LayerEntity, `The layer ${id} not exists!`);
         return item;
     }
@@ -67,7 +60,6 @@ export class LayerService {
      * @param id
      */
     async delete(id: string) {
-        const item = await this.repository.findOneByOrFail({ id });
-        return this.repository.remove(item);
+        return super.delete(id);
     }
 }
