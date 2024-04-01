@@ -69,8 +69,15 @@ export class ExperimentService extends BaseService<ExperimentEntity, ExperimentR
                 : null,
         };
         const item = await this.repository.save(createExperimentDto);
+        const { layer } = item;
         // 更新实验以及实验图层的hashSet
-        await item.updateHashSet(data.samplingType, data.samplingRate, data.customSamplingRange);
+        const { experimentHashSet, layerHashSet } = await this.repository.generateHashSet(
+            item,
+            layer,
+            data,
+        );
+        await this.repository.update(item.id, { hashSet: experimentHashSet });
+        await this.layerRepository.update(layer.id, { hashSet: layerHashSet });
         return this.detail(item.id);
     }
 
@@ -86,9 +93,17 @@ export class ExperimentService extends BaseService<ExperimentEntity, ExperimentR
                   where: { id: data.layer, originUrl: data.originUrl },
               })
             : null;
+        // 更新实验以及实验图层的hashSet
+        const { experimentHashSet, layerHashSet } = await this.repository.generateHashSet(
+            experiment,
+            layer,
+            data,
+        );
         experiment.layer = layer;
+        experiment.hashSet = experimentHashSet;
         await this.repository.save(experiment, { reload: true });
         await this.repository.update(data.id, omit(data, ['id', 'layer']));
+        await this.layerRepository.update(layer.id, { hashSet: layerHashSet });
         return this.detail(data.id);
     }
 
